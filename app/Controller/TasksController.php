@@ -1,8 +1,8 @@
 <?php
 
 class TasksController extends AppController {
-	public $scaffold;
-	public $helper = array('Html', 'Form');
+	public $helpers = array('Html', 'Form');
+	public $components = array('Session');
 
 	public function index() {
 		$options = array(
@@ -21,6 +21,23 @@ class TasksController extends AppController {
 		$this->Task->id = $id;
 		$this->Task->saveField('status', 1);
 		$msg = sprintf('タスク %s を完了しました。', $id);
-		$this->flash($msg, '/Tasks/index');
+
+		$this->Session->setFlash($msg);
+		$this->redirect('/Tasks/index');
+	}
+
+	public function create() {
+		if ($this->request->is('post')) {
+			$data = array(
+				'name' => $this->request->data['name']
+			);
+
+			$id = $this->Task->save($data);
+			$msg = sprintf('タスク %s を登録しました。', $this->Task->id);
+
+			$this->Session->setFlash($msg);
+			$this->redirect('/Tasks/index');
+		}
+		$this->render('create');
 	}
 }
