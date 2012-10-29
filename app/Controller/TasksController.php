@@ -5,14 +5,22 @@ class TasksController extends AppController {
 	public $helper = array('Html', 'Form');
 
 	public function index() {
-		$tasks_data = array();
+		$options = array(
+			'conditions' => array(
+				'Task.status' => 0
+			)
+		);
+		$tasks_data = $this->Task->find('all', $options);
 		$this->set('tasks_data', $tasks_data);
 
 		$this->render('index');
 	}
 
 	public function done() {
-		$msg = sprintf('タスク %s を完了しました。', $this->request->pass[0]);
+		$id = $this->request->pass[0];
+		$this->Task->id = $id;
+		$this->Task->saveField('status', 1);
+		$msg = sprintf('タスク %s を完了しました。', $id);
 		$this->flash($msg, '/Tasks/index');
 	}
 }
