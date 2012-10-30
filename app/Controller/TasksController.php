@@ -45,4 +45,34 @@ class TasksController extends AppController {
 		}
 		$this->render('create');
 	}
+
+	public function edit() {
+		$id = $this->request->pass[0];
+		$options = array(
+			'conditions' => array(
+				'Task.id' => $id,
+				'Task.status' => 0,
+			),
+		);
+		$task = $this->Task->find('first', $options);
+
+		if ($task == false) {
+			$this->Session->setFlash('タスクが見つかりません');
+			$this->redirect('/Tasks/index');
+		}
+
+		if ($this->request->is('post')) {
+			$data = array(
+				'id' => $id,
+				'name' => $this->request->data['Task']['name'],
+				'body' => $this->request->data['Task']['body'],
+			);
+			if ($this->Task->save($data)) {
+				$this->Session->setFlash('更新しました');
+				$this->redirect('/Tasks/index');
+			}
+		} else {
+			$this->request->data = $task;
+		}
+	}
 }
