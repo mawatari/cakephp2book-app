@@ -29,10 +29,15 @@ class TasksController extends AppController {
 	public function create() {
 		if ($this->request->is('post')) {
 			$data = array(
-				'name' => $this->request->data['name']
+				'name' => $this->request->data['name'],
+				'body' => $this->request->data['body'],
 			);
 
 			$id = $this->Task->save($data);
+			if ($id === false) {
+				$this->render('create');
+				return;
+			}
 			$msg = sprintf('タスク %s を登録しました。', $this->Task->id);
 
 			$this->Session->setFlash($msg);
