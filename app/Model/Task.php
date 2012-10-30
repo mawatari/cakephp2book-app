@@ -1,6 +1,8 @@
 <?php
 
 class Task extends AppModel {
+	public $hasMany = array('Note');
+	
 	public $validate = array(
 		'name' => array(
 			'rule' => array('maxLength', 60),
